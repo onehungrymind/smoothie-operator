@@ -1,0 +1,41 @@
+<div id="content-container">
+    <!-- EXISTING ORDERS -->
+    <div class="edit order" ng-repeat="(orderId, orderVal) in orders">
+        <button type="button" class="close" ng-click="removeOrder(orderId)">&times;</button>
+        <order order-id="{{orderId}}" class="caption">
+            Order for: <strong>{{order.userEmail}}</strong>
+
+            <progressbar class="progress-striped active" value="order.status" type="success"><strong>{{getOrderStatus(order.status)}}</strong></progressbar>
+            <div class="row" ng-repeat="item in order.items">
+                <div class="col-md-7 col-sm-7 col-xs-7">{{item.title}}</div>
+                <div class="col-md-2 col-sm-2 col-xs-2">{{item.price | currency}}</div>
+                <div class="col-md-3 col-sm-3 col-xs-3">{{item.total}}</div>
+            </div>
+            <div class="total">
+                <div class="col-md-7 col-sm-7 col-xs-7 medium">Total:</div>
+                <div class="col-md-5 col-sm-5 col-xs-5 medium">{{order.total | currency}}</div>
+            </div>
+        </order>
+    </div>
+    <!-- NEW ORDER -->
+    <div class="create order">
+        <div class="caption">
+            <form ng-submit="addOrder();resetForm()">
+                <fieldset>
+                    <div class="row" ng-repeat="menuItem in menu" ng-controller="MenuItemCtrl">
+                        <div class="col-md-7 col-sm-7 col-xs-7">{{menuItem.title}}</div>
+                        <div class="col-md-2 col-sm-2 col-xs-2">{{menuItem.price | currency}}</div>
+                        <div class="col-md-3 col-sm-3 col-xs-3">
+                            <input type="number" ng-model="menuItem.total" min="0" placeholder="0">
+                        </div>
+                    </div>
+                    <div class="total">
+                        <div class="col-md-7 col-sm-7 col-xs-7 medium">Total:</div>
+                        <div class="col-md-5 col-sm-5 col-xs-5 medium">{{orderTotal | currency}}</div>
+                    </div>
+                    <button type="submit" class="bottom-right-corner"><span class="glyphicon glyphicon-plus"></span></button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>

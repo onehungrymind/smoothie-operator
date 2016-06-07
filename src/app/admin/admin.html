@@ -1,0 +1,33 @@
+<div id="content-container">
+    <!-- EXISTING ORDERS -->
+    <div class="edit order" ng-repeat="order in orders">
+        <button type="button" class="close" ng-click="removeOrder(order.$id)">&times;</button>
+        <order order-id="{{order.$id}}" class="caption">
+            Order for: <strong>{{order.userEmail}}</strong>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary btn-xs"
+                        ng-model="order.status" btn-radio="25">Ordered
+                </button>
+                <button type="button" class="btn btn-primary btn-xs"
+                        ng-model="order.status" btn-radio="50">Preparing
+                </button>
+                <button type="button" class="btn btn-primary btn-xs"
+                        ng-model="order.status" btn-radio="75">Pickup
+                </button>
+                <button type="button" class="btn btn-primary btn-xs"
+                        ng-model="order.status" btn-radio="100">Completed
+                </button>
+            </div>
+            <div class="row" ng-repeat="item in order.items">
+                <div class="col-md-7 col-sm-7 col-xs-7">{{item.title}}</div>
+                <div class="col-md-2 col-sm-2 col-xs-2">{{item.price | currency}}</div>
+                <div class="col-md-3 col-sm-3 col-xs-3">{{item.total}}</div>
+            </div>
+            <div class="total">
+                <div class="col-md-7 col-sm-7 col-xs-7 medium">Total:</div>
+                <div class="col-md-5 col-sm-5 col-xs-5 medium">{{order.total | currency}}</div>
+            </div>
+        </order>
+    </div>
+</div>

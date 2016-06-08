@@ -1,16 +1,16 @@
 angular.module('customer', [
 
 ])
-.controller('CustomerCtrl', function ($firebaseObject, $scope, $location, ORDER_STATUS, MENU, OrdersService, currentUser) {
+.controller('CustomerCtrl', function ($firebaseObject, $scope, $location, ORDER_STATUS, MENU, OrdersService, currentAuth) {
     $scope.menu = MENU;
     $scope.menuItems = [];
     $scope.orderTotal = 0;
 
-    if (!currentUser) {
+    if (!currentAuth) {
       $location.path('/login');
     } else {
       OrdersService.createRefsAndOrders();
-      $scope.orders = OrdersService.getOrdersForUser(currentUser.uid);
+      $scope.orders = OrdersService.getOrdersForUser(currentAuth.uid);
     }
 
     $scope.calculateOrderTotal = function (items) {
@@ -29,8 +29,8 @@ angular.module('customer', [
 
     $scope.addOrder = function () {
         var order = {
-            userId: $scope.currentUser.uid,
-            userEmail: $scope.currentUser.email,
+            userId: currentAuth.uid,
+            userEmail: currentAuth.email,
             // ng-repeat adds $$hashKey properties to each item in the array
             // so we have to strip them back out before they can be saved
             // https://github.com/firebase/angularfire/issues/403

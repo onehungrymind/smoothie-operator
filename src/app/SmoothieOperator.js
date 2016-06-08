@@ -17,23 +17,38 @@ angular.module('smoothieOperator', [
                 templateUrl: 'app/customer/customer.html',
                 controller: 'CustomerCtrl',
                 resolve: {
-                    currentUser: waitForUser
+                  currentAuth: function(Auth) {
+                    return Auth.$requireSignIn();
+                  }
                 }
             }).
             when('/admin', {
                 templateUrl: 'app/admin/admin.html',
                 controller: 'AdminCtrl',
                 resolve: {
-                    currentUser: waitForUser
+                  currentAuth: function(Auth) {
+                    return Auth.$requireSignIn();
+                  }
                 }
             }).
             when('/login', {
                 templateUrl: 'app/login/login.html',
-                controller: 'LoginCtrl'
+                controller: 'LoginCtrl',
+                resolve: {
+                  currentAuth: function(Auth) {
+                    return Auth.$waitForSignIn();
+                  }
+                }
             }).
             otherwise({redirectTo: '/'});
     })
-    .constant('FIREBASE_URI', 'https://smoothie-operator.firebaseio.com/')
+    .run(function ($rootScope, $location) {
+      $rootScope.$on("$routeChangeError", function(event, next, previous, error) {
+        if (error === "AUTH_REQUIRED") {
+          $location.path("/login");
+        }
+      });
+    })
     .factory('firebaseRef', function () {
       return function (path) {
         var ref = firebase.database().ref();
@@ -53,19 +68,14 @@ angular.module('smoothieOperator', [
 
         Auth.$onAuthStateChanged(function(user) {
           LoadingService.setLoading(false);
+          $scope.currentUser = user || null;
+          UserService.setCurrentUser(user);
 
-          if (user) {
-            $scope.currentUser = user;
-
-            if ($location.path() === '/login') {
-              $location.path('/');
-            }
-          } else {
-            $scope.currentUser = null;
+          if (user && $location.path() === '/login') {
+            $location.path('/');
+          } else if (!user) {
             $location.path('/login');
           }
-
-          UserService.setCurrentUser(user);
         });
     })
 ;

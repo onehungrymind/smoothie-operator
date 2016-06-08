@@ -1,9 +1,7 @@
 angular.module('admin', [
 
 ])
-.controller('AdminCtrl', function ($scope, $location, OrdersService, currentUser) {
-    if (!currentUser) $location.path('/login');
-
+.controller('AdminCtrl', function ($scope, $location, OrdersService, currentAuth) {
     OrdersService.createRefsAndOrders();
 
     $scope.orders = OrdersService.getOrders();

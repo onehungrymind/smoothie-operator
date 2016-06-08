@@ -1,5 +1,5 @@
 angular.module('common')
-    .service('UserService', function (Auth, $rootScope, LoadingService) {
+    .service('UserService', function (Auth, $rootScope, LoadingService, $location) {
         var service = this;
         service.user = null;
         service.loginService = Auth;

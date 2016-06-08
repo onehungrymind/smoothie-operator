@@ -1,0 +1,12 @@
+{
+  "files": ["src/**/*"],
+  "ghostMode": false,
+  "server": {
+    "baseDir": "./src",
+    "index": "index.start.html",
+    "routes": {
+      "/node_modules": "node_modules"
+    }
+  },
+  "open": false
+}

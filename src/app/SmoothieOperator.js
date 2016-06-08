@@ -34,67 +34,36 @@ angular.module('smoothieOperator', [
             otherwise({redirectTo: '/'});
     })
     .constant('FIREBASE_URI', 'https://smoothie-operator.firebaseio.com/')
-    .factory('firebaseRef', function (Firebase, FIREBASE_URI) {
-        return function (path) {
-            var ref = new Firebase(FIREBASE_URI);
-            if (path) {
-                ref = ref.child(path);
-            }
-            return ref;
+    .factory('firebaseRef', function () {
+      return function (path) {
+        var ref = firebase.database().ref();
+        if (path) {
+          ref = ref.child(path);
         }
+        return ref;
+      }
     })
-    //todo-hack https://github.com/firebase/angularfire/issues/403
-    .config(function ($provide) {
-        $provide.decorator('$firebaseUtils', function ($delegate) {
-            function stripDollarPrefixes(obj) {
-                if (angular.isArray(obj)) {
-                    obj = obj.slice();
-                    angular.forEach(obj, function (v, k) {
-                        obj[k] = stripDollarPrefixes(v);
-                    });
-                }
-                else if (angular.isObject(obj)) {
-                    obj = angular.extend({}, obj);
-                    angular.forEach(obj, function (v, k) {
-                        if (k.charAt(0) === '$') {
-                            delete obj[k];
-                        }
-                        else {
-                            obj[k] = stripDollarPrefixes(v);
-                        }
-                    });
-                }
-                return obj;
-            }
-
-            var toJSON = $delegate.toJSON;
-            $delegate.toJSON = function (rec) {
-                var json = toJSON(rec);
-                angular.forEach(json, function (v, k) {
-                    if (angular.isObject(v)) {
-                        json[k] = stripDollarPrefixes(v);
-                    }
-                });
-                return json;
-            };
-            return $delegate;
-        });
+    .factory('Auth', function ($firebaseAuth) {
+      return $firebaseAuth();
     })
-    .controller('MainCtrl', function ($scope, $location, UserService) {
+    .controller('MainCtrl', function (LoadingService, Auth, $scope, $location, UserService) {
         $scope.logout = function () {
             UserService.logout();
         };
 
-        $scope.$on('onLogin', function () {
-            $scope.currentUser = UserService.getCurrentUser();
-            $location.path('/');
-        });
+        Auth.$onAuthStateChanged(function(user) {
+          LoadingService.setLoading(false);
 
-        $scope.$on('onLogout', function () {
+          if (user) {
+            $scope.currentUser = user;
+
+            if ($location.path() === '/login') {
+              $location.path('/');
+            }
+          } else {
             $scope.currentUser = null;
             $location.path('/login');
+          }
         });
-
-        $scope.currentUser = UserService.getCurrentUser();
     })
 ;

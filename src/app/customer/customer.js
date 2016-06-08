@@ -1,15 +1,15 @@
 angular.module('customer', [
 
 ])
-.controller('CustomerCtrl', function ($scope, $location, ORDER_STATUS, MENU, OrdersService, currentUser) {
+.controller('CustomerCtrl', function ($firebaseObject, $scope, $location, ORDER_STATUS, MENU, OrdersService, currentUser) {
     $scope.menu = MENU;
     $scope.menuItems = [];
     $scope.orderTotal = 0;
 
     if (!currentUser) {
-        $location.path('/login');
+      $location.path('/login');
     } else {
-        $scope.orders = OrdersService.getOrdersForUser(currentUser.id);
+      $scope.orders = OrdersService.getOrdersForUser(currentUser.id);
     }
 
     $scope.calculateOrderTotal = function (items) {
@@ -64,10 +64,10 @@ angular.module('customer', [
 .controller('MenuItemCtrl', function ($scope) {
     $scope.menuItems.push($scope.menuItem);
 })
-.directive('order', function (firebaseRef, $firebase, ORDER_STATUS) {
+.directive('order', function (firebaseRef, $firebaseObject, ORDER_STATUS) {
     var linker = function (scope, element, attrs) {
         scope.orderId = attrs['orderId'];
-        var order = scope.order = $firebase(firebaseRef('orders/' + scope.orderId)).$asObject();
+        var order = scope.order = $firebaseObject(firebaseRef('orders/' + scope.orderId));
         order.$loaded(function () {
             // wait for $loaded so that we don't accidentally try and set
             // the value before we fetch it from the server

@@ -11,9 +11,7 @@ angular.module('login', [
     $scope.errorMessage = '';
 
     $scope.$on('onLoginError', function (evt, err) {
-        $scope.$apply(function () {
-            $scope.errorMessage = err;
-        });
+      $scope.errorMessage = err;
     });
 
     $scope.submit = function (email, password, register) {

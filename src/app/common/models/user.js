@@ -1,11 +1,19 @@
 angular.module('common')
-    .service('UserService', function ($rootScope, LoadingService, $firebaseSimpleLogin, firebaseRef) {
+    .service('UserService', function (Auth, $rootScope, LoadingService) {
         var service = this;
         service.user = null;
-        service.loginService = $firebaseSimpleLogin(firebaseRef());
+        service.loginService = Auth;
+
+        function onError(err) {
+          service.user = null;
+
+          LoadingService.setLoading(false);
+
+          $rootScope.$broadcast('onLoginError', err.message);
+        }
 
         service.waitForUser = function () {
-            return service.loginService.$getCurrentUser();
+            return service.loginService.$waitForSignIn();
         };
 
         service.getCurrentUser = function () {
@@ -15,42 +23,21 @@ angular.module('common')
         service.login = function (email, password) {
             LoadingService.setLoading(true);
 
-            service.loginService.$login('password', { email: email, password: password });
+            service.loginService.$signInWithEmailAndPassword(email, password)
+              .catch(onError);
         };
 
         service.logout = function () {
             LoadingService.setLoading(true);
 
-            service.loginService.$logout();
+            service.loginService.$signOut();
         };
 
         service.register = function (email, password) {
             LoadingService.setLoading(true);
 
-            service.loginService.$createUser(email, password);
+            service.loginService.$createUserWithEmailAndPassword(email, password)
+              .catch(onError);
         };
-
-        $rootScope.$on('$firebaseSimpleLogin:login', function (e, user) {
-            service.user = user;
-            LoadingService.setLoading(false);
-            $rootScope.$broadcast('onLogin');
-        });
-
-        $rootScope.$on('$firebaseSimpleLogin:logout', function (e) {
-            service.user = null;
-            LoadingService.setLoading(false);
-            $rootScope.$broadcast('onLogout');
-        });
-
-        $rootScope.$on('$firebaseSimpleLogin:error', function (e, err) {
-            service.user = null;
-
-            $rootScope.$apply(function () {
-                LoadingService.setLoading(false);
-            });
-
-            var errorMessage = err.message.replace('FirebaseSimpleLogin: ', '');
-            $rootScope.$broadcast('onLoginError', errorMessage);
-        });
     })
 ;

@@ -1,7 +1,7 @@
 angular.module('common')
-    .factory('OrdersService', function ($firebase, firebaseRef, UserService) {
+    .factory('OrdersService', function ($firebaseArray, $firebaseObject, firebaseRef, UserService) {
         var ordersRef = firebaseRef('orders');
-        var orders = $firebase(ordersRef).$asArray();
+        var orders = $firebaseArray(ordersRef);
 
         var usersRef = firebaseRef('users');
 
@@ -10,13 +10,18 @@ angular.module('common')
         };
 
         var getOrdersForUser = function (userId) {
-            return $firebase(usersRef.child(userId + '/orders/')).$asObject();
+          return $firebaseObject(usersRef.child(userId + '/orders/'));
         };
 
         var addOrder = function (order) {
-            orders.$add(order).then(function (ref) {
-                usersRef.child(order.userId + '/orders/' + ref.name()).set(true);
-            });
+            orders.$add(order)
+              .then(function (ref) {
+                console.log(ref);
+                  // usersRef.child(order.userId + '/orders/' + ref.name()).set(true);
+              })
+              .catch(function(error) {
+                console.log(error);
+              })
         };
 
         var updateOrder = function (order) {

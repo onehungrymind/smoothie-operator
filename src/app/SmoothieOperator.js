@@ -64,6 +64,8 @@ angular.module('smoothieOperator', [
             $scope.currentUser = null;
             $location.path('/login');
           }
+
+          UserService.setCurrentUser(user);
         });
     })
 ;

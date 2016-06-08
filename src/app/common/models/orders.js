@@ -16,8 +16,7 @@ angular.module('common')
         var addOrder = function (order) {
             orders.$add(order)
               .then(function (ref) {
-                console.log(ref);
-                  // usersRef.child(order.userId + '/orders/' + ref.name()).set(true);
+                usersRef.child(order.userId + '/orders/' + ref.key).set(true);
               })
               .catch(function(error) {
                 console.log(error);
@@ -32,7 +31,7 @@ angular.module('common')
             var user = UserService.getCurrentUser();
             var order = orders.$getRecord(orderId);
             orders.$remove(order).then(function () {
-                usersRef.child(user.id + '/orders/' + order.$id).remove();
+                usersRef.child(user.uid + '/orders/' + order.$id).remove();
             });
         };
 

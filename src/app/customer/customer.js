@@ -9,7 +9,7 @@ angular.module('customer', [
     if (!currentUser) {
       $location.path('/login');
     } else {
-      $scope.orders = OrdersService.getOrdersForUser(currentUser.id);
+      $scope.orders = OrdersService.getOrdersForUser(currentUser.uid);
     }
 
     $scope.calculateOrderTotal = function (items) {
@@ -28,7 +28,7 @@ angular.module('customer', [
 
     $scope.addOrder = function () {
         var order = {
-            userId: $scope.currentUser.id,
+            userId: $scope.currentUser.uid,
             userEmail: $scope.currentUser.email,
             // ng-repeat adds $$hashKey properties to each item in the array
             // so we have to strip them back out before they can be saved
@@ -72,7 +72,7 @@ angular.module('customer', [
             // wait for $loaded so that we don't accidentally try and set
             // the value before we fetch it from the server
             scope.$watch('order.status', function () {
-                order.$save();
+              order.$save();
             });
         });
 

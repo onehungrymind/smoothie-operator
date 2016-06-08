@@ -17,7 +17,11 @@ angular.module('common')
         };
 
         service.getCurrentUser = function () {
-            return service.user;
+          return service.user;
+        };
+
+        service.setCurrentUser = function (user) {
+          return service.user = user;
         };
 
         service.login = function (email, password) {

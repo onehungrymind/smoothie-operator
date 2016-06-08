@@ -9,6 +9,7 @@ angular.module('customer', [
     if (!currentUser) {
       $location.path('/login');
     } else {
+      OrdersService.createRefsAndOrders();
       $scope.orders = OrdersService.getOrdersForUser(currentUser.uid);
     }
 

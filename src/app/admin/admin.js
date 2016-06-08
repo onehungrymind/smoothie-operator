@@ -4,6 +4,8 @@ angular.module('admin', [
 .controller('AdminCtrl', function ($scope, $location, OrdersService, currentUser) {
     if (!currentUser) $location.path('/login');
 
+    OrdersService.createRefsAndOrders();
+
     $scope.orders = OrdersService.getOrders();
 
     $scope.removeOrder = function (order) {

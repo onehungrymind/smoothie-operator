@@ -3,7 +3,7 @@
   "ghostMode": false,
   "server": {
     "baseDir": "./src",
-    "index": "index.start.html",
+    "index": "index.html",
     "routes": {
       "/node_modules": "node_modules"
     }

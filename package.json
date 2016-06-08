@@ -4,6 +4,7 @@
   "description": "A smoothie operator built with Firebase and Angular",
   "main": "src/app/SmoothieOperator.js",
   "scripts": {
+    "start": "browser-sync start --config bs-config.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -30,5 +31,8 @@
     "jquery": "^2.2.4",
     "modernizr": "^3.3.1",
     "sugar": "^1.4.1"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.13.0"
   }
 }
